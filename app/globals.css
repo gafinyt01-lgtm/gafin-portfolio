@@ -21,12 +21,30 @@ body.intro-lock { overflow: hidden; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; }
 ::selection { background: rgba(104, 137, 255, .4); color: white; }
-main { position: relative; min-height: 100vh; overflow: hidden; }
+main { position: relative; min-height: 100vh; overflow: hidden; isolation: isolate; }
 .ambient { position: fixed; width: 440px; height: 440px; border-radius: 50%; filter: blur(130px); opacity: .12; pointer-events: none; z-index: 0; }
 .ambient-a { top: 10%; left: -250px; background: #416cff; }
 .ambient-b { right: -250px; top: 55%; background: #923cff; }
 .noise-overlay { position: fixed; inset: 0; z-index: 20; pointer-events: none; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E"); }
 .section-shell, .site-header { width: min(1160px, calc(100% - 64px)); margin-inline: auto; position: relative; z-index: 1; }
+
+
+/* Cyber network atmosphere */
+.network-backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; opacity: .72; background:
+  radial-gradient(circle at 12% 18%, rgba(58,130,255,.17), transparent 26%),
+  radial-gradient(circle at 82% 34%, rgba(127,75,255,.14), transparent 28%),
+  radial-gradient(circle at 48% 88%, rgba(38,190,225,.10), transparent 30%),
+  linear-gradient(135deg, rgba(12,19,39,.55), rgba(7,10,22,.18) 48%, rgba(17,12,38,.42)); }
+.network-backdrop::before { content: ""; position: absolute; inset: 0; opacity: .34; background-image:
+  radial-gradient(circle, rgba(104,218,255,.85) 1px, transparent 2px),
+  linear-gradient(28deg, transparent 49.7%, rgba(81,174,255,.20) 50%, transparent 50.3%),
+  linear-gradient(148deg, transparent 49.7%, rgba(141,111,255,.16) 50%, transparent 50.3%);
+  background-size: 118px 118px, 230px 190px, 270px 230px; background-position: 12px 18px, 0 0, 40px 30px;
+  mask-image: radial-gradient(ellipse at center, black 15%, transparent 82%); }
+.network-backdrop::after { content: ""; position: absolute; inset: 0; opacity: .16; background-image: linear-gradient(rgba(105,153,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(105,153,255,.18) 1px, transparent 1px); background-size: 76px 76px; mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent); animation: gridDrift 28s linear infinite; }
+.section-subtitle { max-width: 470px; margin: 20px 0 0; color: #96a6c7; font-size: 13px; line-height: 1.8; letter-spacing: .015em; }
+.project-heading .section-subtitle { margin-top: 18px; }
+@media (max-width: 650px) { .section-subtitle { font-size: 12px; margin-top: 16px; } }
 
 /* Cinematic welcome */
 .cinematic-intro { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; overflow: hidden; background: #050711; animation: introFade .9s ease 7.1s forwards; }
@@ -66,7 +84,7 @@ main { position: relative; min-height: 100vh; overflow: hidden; }
 
 /* Typing and cursor glow */
 .type-text { display: inline; }
-.type-char { display: inline-block; opacity: 0; animation: charAppear .38s cubic-bezier(.2,.8,.2,1) forwards; }
+.type-char { display: inline-block; opacity: 1; animation: charAppear .38s cubic-bezier(.2,.8,.2,1) both; }
 .hover-glitch, .type-text { transition: transform .25s ease, text-shadow .25s ease, filter .25s ease; transform-origin: left center; }
 .type-text:hover { transform: scale(1.025); filter: drop-shadow(0 0 7px rgba(85,230,255,.45)); }
 .global-cursor-glow {
@@ -87,7 +105,7 @@ main { position: relative; min-height: 100vh; overflow: hidden; }
   mix-blend-mode: screen;
 }
 .global-cursor-glow.cursor-visible { opacity: 1; }
-@keyframes charAppear { from { opacity: 0; transform: translateY(12px) rotateX(65deg); filter: blur(5px); } to { opacity: 1; transform: translateY(0) rotateX(0); filter: blur(0); } }
+@keyframes charAppear { from { opacity: 1; transform: translateY(12px) rotateX(65deg); filter: blur(5px); } to { opacity: 1; transform: translateY(0) rotateX(0); filter: blur(0); } }
 
 /* Hero */
 .hero { min-height: 700px; padding: 94px 0 100px; display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: 35px; }
