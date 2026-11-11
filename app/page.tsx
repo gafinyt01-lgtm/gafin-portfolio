@@ -1,19 +1,10 @@
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  ArrowDown,
-  ArrowUpRight,
-  Code2,
-  Gamepad2,
-  Box,
-  Sparkles,
-  Github,
-  Menu,
-  X,
-  Cpu,
-  Layers3,
-  Send,
+  ArrowDown, ArrowUpRight, Code2, Gamepad2, Box, Sparkles,
+  Github, Menu, X, Cpu, Layers3, Send,
 } from "lucide-react";
 
 const roles = ["PROGRAMMER", "GAME DEVELOPER", "3D DESIGNER"];
@@ -54,7 +45,10 @@ const skills = [
   { name: "Creative Coding", level: "EXPERIMENTAL", icon: Sparkles },
 ];
 
-const rainSymbols = ["0", "1", "{ }", "/", "<", ">", "01", "λ", "∑", "&&", "=>", "404", "G", "const", "{}", "[]", "npm", "git", "CSS", "JS"];
+const rainSymbols = [
+  "0", "1", "{ }", "/", "<", ">", "01", "λ", "∑", "&&",
+  "=>", "404", "G", "const", "{}", "[]", "npm", "git", "CSS", "JS",
+];
 
 function TypeText({
   text,
@@ -66,13 +60,15 @@ function TypeText({
   delay?: number;
 }) {
   return (
-    <span className={`type-text ${className}`} aria-label={text} data-text={text}>
+    <span className={`type-text ${className}`} aria-label={text}>
       {Array.from(text).map((char, index) => (
         <span
           className="type-char"
           aria-hidden="true"
-          key={`${char}-${index}`}
-          style={{ animationDelay: `${delay + Math.min(index * 0.018, 1.15)}s` }}
+          key={`${index}-${char}`}
+          style={{
+            animationDelay: `${delay + Math.min(index * 0.045, 2.5)}s`,
+          }}
         >
           {char === " " ? "\u00a0" : char}
         </span>
@@ -118,6 +114,7 @@ export default function Home() {
   const [roleIndex, setRoleIndex] = useState(0);
   const [introVisible, setIntroVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const portraitRef = useRef<HTMLDivElement>(null);
 
   const instagramUrl = "https://www.instagram.com/gfinbgsptra/";
   const whatsappUrl = "https://wa.me/6285809498801";
@@ -150,6 +147,7 @@ export default function Home() {
 
     window.addEventListener("pointermove", moveGlow, { passive: true });
     document.addEventListener("pointerleave", hideGlow);
+
     return () => {
       window.removeEventListener("pointermove", moveGlow);
       document.removeEventListener("pointerleave", hideGlow);
@@ -161,12 +159,31 @@ export default function Home() {
     return () => document.body.classList.remove("intro-lock");
   }, [introVisible]);
 
+  const movePortraitReveal = (event: React.PointerEvent<HTMLDivElement>) => {
+    const stage = portraitRef.current;
+    if (!stage) return;
+
+    const rect = stage.getBoundingClientRect();
+
+    stage.style.setProperty("--reveal-x", `${event.clientX - rect.left}px`);
+    stage.style.setProperty("--reveal-y", `${event.clientY - rect.top}px`);
+  };
+
+  const resetPortraitReveal = () => {
+    const stage = portraitRef.current;
+    if (!stage) return;
+
+    stage.style.setProperty("--reveal-x", "-500px");
+    stage.style.setProperty("--reveal-y", "-500px");
+  };
+
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <main>
       <div className="network-backdrop" aria-hidden="true" />
       <div className="global-cursor-glow" aria-hidden="true" />
+
       {introVisible && (
         <div className="cinematic-intro" role="dialog" aria-label="Welcome to Gafin's portfolio">
           <div className="intro-grid" />
@@ -192,14 +209,16 @@ export default function Home() {
           <div className="intro-orb intro-orb-one" />
           <div className="intro-orb intro-orb-two" />
           <div className="intro-content">
-            <span className="intro-kicker"><span className="status-dot" /> PERSONAL DIGITAL SPACE</span>
-            <p className="intro-welcome">WELCOME TO</p>
-            <h1 className="intro-title" data-text="GAFIN'S PORTFOLIO">GAFIN&apos;S PORTFOLIO</h1>
-            <p className="intro-subtitle">GAFIN BAGOES SYAHPUTRA</p>
+            <span className="intro-kicker"><span className="status-dot" /><TypeText text="PERSONAL DIGITAL SPACE" /></span>
+            <p className="intro-welcome"><TypeText text="WELCOME TO" /></p>
+            <h1 className="intro-title">GAFIN&apos;S PORTFOLIO</h1>
+            <p className="intro-subtitle"><TypeText text="GAFIN BAGOES SYAHPUTRA" /></p>
             <div className="intro-progress"><span /></div>
             <div className="intro-bottom">
-              <span>INITIALIZING EXPERIENCE...</span>
-              <button onClick={() => setIntroVisible(false)}>SKIP INTRO <ArrowUpRight size={14} /></button>
+              <span><TypeText text="INITIALIZING EXPERIENCE..." /></span>
+              <button onClick={() => setIntroVisible(false)}>
+                <TypeText text="SKIP INTRO" /> <ArrowUpRight size={14} />
+              </button>
             </div>
           </div>
           <span className="intro-coordinate">IDN / PLB — 2026</span>
@@ -215,39 +234,55 @@ export default function Home() {
           <span className="brand-mark">G<span>.</span></span>
           <span>GAFIN<span className="brand-muted">/PORTFOLIO</span></span>
         </a>
-        <button className="mobile-menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+
+        <button
+          className="mobile-menu-button"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
           {menuOpen ? <X /> : <Menu />}
         </button>
+
         <nav className={menuOpen ? "main-nav nav-open" : "main-nav"}>
           <a href="#home" onClick={closeMenu}><TypeText text="HOME" /></a>
           <a href="#about" onClick={closeMenu}><TypeText text="ABOUT" /></a>
           <a href="#skills" onClick={closeMenu}><TypeText text="SKILLS" /></a>
           <a href="#projects" onClick={closeMenu}><TypeText text="PROJECTS" /></a>
-          <a href="#contact" className="nav-contact" onClick={closeMenu}>LET&apos;S TALK <ArrowUpRight size={14} /></a>
+          <a href="#contact" className="nav-contact" onClick={closeMenu}>
+            <TypeText text="LET'S TALK" /> <ArrowUpRight size={14} />
+          </a>
         </nav>
       </header>
 
       <section className="hero section-shell" id="home">
         <div className="hero-copy">
-          <div className="eyebrow reveal-up"><span className="status-dot" /> OPEN TO CREATIVE PROJECTS</div>
-          <p className="hero-pretitle reveal-up delay-1">HELLO, WORLD! I AM</p>
+          <div className="eyebrow reveal-up"><span className="status-dot" /><TypeText text="OPEN TO CREATIVE PROJECTS" /></div>
+          <p className="hero-pretitle reveal-up delay-1"><TypeText text="HELLO, WORLD! I AM" /></p>
+
           <h1 className="hero-name">
             <span className="name-line"><TypeText text="GAFIN" delay={0.2} /></span>
             <span className="name-line name-outline"><TypeText text="BAGOES." delay={0.55} /></span>
           </h1>
-          <p className="hero-fullname full-name-glitch reveal-up delay-2" data-text="GAFIN BAGOES SYAHPUTRA">GAFIN BAGOES SYAHPUTRA</p>
+
+          <p className="hero-fullname full-name-glitch reveal-up delay-2" data-text="GAFIN BAGOES SYAHPUTRA">
+            GAFIN BAGOES SYAHPUTRA
+          </p>
+
           <div className="role-row reveal-up delay-3">
             <span className="role-prefix">I AM A</span>
             <span className="role-value" key={roleIndex}>{roles[roleIndex]}</span>
             <span className="role-cursor" />
           </div>
+
           <p className="hero-description reveal-up delay-4">
-            Creating digital experiences through code, games, and 3D visuals. Always experimenting, learning, and building something new.
+            <TypeText text="Creating digital experiences through code, games, and 3D visuals. Always experimenting, learning, and building something new." />
           </p>
+
           <div className="hero-actions reveal-up delay-5">
-            <a href="#projects" className="button-primary">EXPLORE MY WORK <ArrowUpRight size={17} /></a>
-            <a href="#contact" className="button-ghost">CONTACT ME <Send size={15} /></a>
+            <a href="#projects" className="button-primary"><TypeText text="EXPLORE MY WORK" /> <ArrowUpRight size={17} /></a>
+            <a href="#contact" className="button-ghost"><TypeText text="CONTACT ME" /> <Send size={15} /></a>
           </div>
+
           <div className="hero-socials reveal-up delay-6">
             <a href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram Gafin" className="social-link">
               <InstagramMark /><span>@gfinbgsptra</span><ArrowUpRight size={12} />
@@ -262,21 +297,38 @@ export default function Home() {
           <div className="visual-label label-top"><span>FIG. 001</span><span>CREATIVE MINDSET</span></div>
           <div className="portrait-orbit orbit-one" />
           <div className="portrait-orbit orbit-two" />
-          <div className="portrait-stage">
+
+          <div
+            className="portrait-stage spider-reveal-stage"
+            ref={portraitRef}
+            onPointerMove={movePortraitReveal}
+            onPointerLeave={resetPortraitReveal}
+          >
             <div className="portrait-backlight" />
-            <img src="/images/gafin.png" alt="Portrait of Gafin Bagoes Syahputra" className="portrait-image" />
+
+            <img
+              src="/images/gafin.png"
+              alt="Portrait of Gafin Bagoes Syahputra"
+              className="portrait-image"
+            />
+
+            <img
+              src="/images/spiderman.png"
+              alt=""
+              aria-hidden="true"
+              className="spiderman-reveal-image"
+              draggable={false}
+            />
+
             <div className="portrait-tint" />
-            <div className="scan-grid" />
-            <div className="face-id-frame"><i /><i /><i /><i /><span>FACE ID / SCANNING</span></div>
-            <div className="scan-line"><span>BIOMETRIC SCAN</span></div>
-            <div className="scan-corners"><i /><i /><i /><i /></div>
-            <div className="portrait-crosshair crosshair-one">+</div>
-            <div className="portrait-crosshair crosshair-two">+</div>
+            <div className="reveal-ring" aria-hidden="true" />
           </div>
-          <div className="floating-chip chip-code"><Code2 size={15} /> <span>CODE / CREATE</span></div>
-          <div className="floating-chip chip-3d"><Box size={15} /> <span>3D / DESIGN</span></div>
+
+          <div className="floating-chip chip-code"><Code2 size={15} /><span>CODE / CREATE</span></div>
+          <div className="floating-chip chip-3d"><Box size={15} /><span>3D / DESIGN</span></div>
           <div className="visual-label label-bottom"><span>PALEMBANG, INDONESIA</span><span>EST. 2026</span></div>
         </div>
+
         <a href="#about" className="scroll-indicator"><span>SCROLL TO EXPLORE</span><ArrowDown size={15} /></a>
       </section>
 
@@ -296,19 +348,21 @@ export default function Home() {
         <div className="section-heading">
           <span className="section-index">01 / ABOUT ME</span>
           <h2><TypeText text="BEHIND THE" /><br /><span className="gradient-text"><TypeText text="PIXELS." delay={0.3} /></span></h2>
-          <p className="section-subtitle">A creative mind exploring the space between technology and imagination.</p>
+          <p className="section-subtitle"><TypeText text="A creative mind exploring the space between technology and imagination." /></p>
         </div>
+
         <div className="about-content">
           <div className="about-lead">
             <span className="mini-label">A LITTLE ABOUT ME</span>
             <h3>Hey, I’m <span className="gradient-text">Gafin.</span></h3>
-            <p>I’m a digital creator interested in programming, game development, and 3D design. I enjoy turning ideas into things people can see, use, and experience.</p>
+            <p><TypeText text="I’m a digital creator interested in programming, game development, and 3D design. I enjoy turning ideas into things people can see, use, and experience." /></p>
           </div>
           <div className="about-details">
-            <p>My journey is always evolving. Every project is an opportunity to explore new ideas, solve challenges, and sharpen my skills.</p>
+            <p><TypeText text="My journey is always evolving. Every project is an opportunity to explore new ideas, solve challenges, and sharpen my skills." /></p>
             <div className="about-signature">GAFIN BAGOES SYAHPUTRA <span>— DIGITAL CREATOR</span></div>
           </div>
         </div>
+
         <div className="stats-row">
           <div><strong>03<span>+</span></strong><small>CREATIVE FIELDS</small></div>
           <div><strong>∞</strong><small>IDEAS TO EXPLORE</small></div>
@@ -320,8 +374,9 @@ export default function Home() {
         <div className="section-heading">
           <span className="section-index">02 / WHAT I DO</span>
           <h2><TypeText text="MY CREATIVE" /><br /><span className="gradient-text"><TypeText text="TOOLKIT." delay={0.3} /></span></h2>
-          <p className="section-subtitle">The skills and tools I use to bring digital ideas to life.</p>
+          <p className="section-subtitle"><TypeText text="The skills and tools I use to bring digital ideas to life." /></p>
         </div>
+
         <div className="skills-grid">
           {skills.map((skill, index) => {
             const Icon = skill.icon;
@@ -329,7 +384,7 @@ export default function Home() {
               <div className="skill-card hover-card" key={skill.name} style={{ animationDelay: `${index * 0.08}s` }}>
                 <div className="skill-icon"><Icon size={21} /></div>
                 <span className="skill-level">{skill.level}</span>
-                <h3>{skill.name}</h3>
+                <h3><TypeText text={skill.name} /></h3>
                 <span className="card-arrow"><ArrowUpRight size={16} /></span>
               </div>
             );
@@ -339,9 +394,14 @@ export default function Home() {
 
       <section className="content-section section-shell" id="projects">
         <div className="section-heading project-heading">
-          <div><span className="section-index">03 / SELECTED WORK</span><h2><TypeText text="THINGS I" /><br /><span className="gradient-text"><TypeText text="BUILD." delay={0.3} /></span></h2><p className="section-subtitle">A glimpse into the worlds, interfaces, and visuals I love creating.</p></div>
-          <p className="project-heading-note">Ideas, experiments, and creations — always evolving.</p>
+          <div>
+            <span className="section-index">03 / SELECTED WORK</span>
+            <h2><TypeText text="THINGS I" /><br /><span className="gradient-text"><TypeText text="BUILD." delay={0.3} /></span></h2>
+            <p className="section-subtitle"><TypeText text="A glimpse into the worlds, interfaces, and visuals I love creating." /></p>
+          </div>
+          <p className="project-heading-note"><TypeText text="Ideas, experiments, and creations — always evolving." /></p>
         </div>
+
         <div className="projects-list">
           {projects.map((project) => {
             const Icon = project.icon;
@@ -351,8 +411,8 @@ export default function Home() {
                 <div className="project-icon"><Icon size={25} /></div>
                 <div className="project-info">
                   <span className="project-category">{project.category}</span>
-                  <h3>{project.title}</h3>
-                  <p>{project.description}</p>
+                  <h3><TypeText text={project.title} /></h3>
+                  <p><TypeText text={project.description} /></p>
                 </div>
                 <span className="project-tag">{project.tag}</span>
                 <ArrowUpRight className="project-arrow" size={22} />
@@ -365,16 +425,18 @@ export default function Home() {
       <section className="contact-section section-shell" id="contact">
         <div className="contact-glow" />
         <span className="section-index">04 / GET IN TOUCH</span>
-        <h2>HAVE AN IDEA?<br /><span className="gradient-text">LET&apos;S CREATE.</span></h2>
-        <p>Have a project in mind, an idea to share, or just want to connect? Reach out through any of the platforms below.</p>
+        <h2><TypeText text="HAVE AN IDEA?" /><br /><span className="gradient-text"><TypeText text="LET'S CREATE." /></span></h2>
+        <p><TypeText text="Have a project in mind, an idea to share, or just want to connect? Reach out through any of the platforms below." /></p>
+
         <div className="contact-actions">
           <a href={whatsappUrl} target="_blank" rel="noreferrer" className="contact-button whatsapp-button">
-            <WhatsAppMark /> CHAT ON WHATSAPP <ArrowUpRight size={17} />
+            <WhatsAppMark /> <TypeText text="CHAT ON WHATSAPP" /> <ArrowUpRight size={17} />
           </a>
           <a href={instagramUrl} target="_blank" rel="noreferrer" className="contact-button instagram-button">
-            <InstagramMark /> FOLLOW ON INSTAGRAM <ArrowUpRight size={17} />
+            <InstagramMark /> <TypeText text="FOLLOW ON INSTAGRAM" /> <ArrowUpRight size={17} />
           </a>
         </div>
+
         <div className="contact-handle-row">
           <span><WhatsAppMark /> {whatsappDisplay}</span>
           <span><InstagramMark /> @gfinbgsptra</span>
