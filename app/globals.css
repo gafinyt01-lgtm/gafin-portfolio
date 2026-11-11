@@ -350,23 +350,32 @@ main { position: relative; min-height: 100vh; overflow: hidden; isolation: isola
   background: none;
 }
 
-/* TYPING AND CURSOR GLOW */
-.type-text { display: inline; }
+/* TEXT AND CURSOR EFFECTS */
+.type-text {
+  display: inline;
+  transition: text-shadow .25s ease;
+  transform: none !important;
+}
 
 .type-char {
   display: inline-block;
   opacity: 1;
   animation: charAppear .38s cubic-bezier(.2,.8,.2,1) both;
+  transform-origin: center bottom;
 }
 
-.hover-glitch, .type-text {
-  transition: transform .25s ease, text-shadow .25s ease, filter .25s ease;
-  transform-origin: left center;
-}
-
+/* Glow only: no scaling or movement that can make text look doubled */
 .type-text:hover {
-  transform: scale(1.025);
-  filter: drop-shadow(0 0 7px rgba(85,230,255,.45));
+  transform: none !important;
+  filter: none !important;
+  text-shadow:
+    0 0 5px rgba(85,230,255,.55),
+    0 0 13px rgba(85,230,255,.28);
+}
+
+.type-text:hover .type-char {
+  transform: none !important;
+  text-shadow: none;
 }
 
 .global-cursor-glow {
@@ -818,7 +827,7 @@ main { position: relative; min-height: 100vh; overflow: hidden; isolation: isola
   animation: gradientFlow 7s linear infinite;
 }
 
-/* IMPORTANT FIX: GRADIENT TEXT INSIDE TYPE TEXT */
+/* Gradient characters: keep visible without hover duplication */
 .gradient-text .type-text {
   display: inline-block;
   color: transparent;
@@ -827,6 +836,8 @@ main { position: relative; min-height: 100vh; overflow: hidden; isolation: isola
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
+  transform: none !important;
+  filter: none !important;
 }
 
 .gradient-text .type-char {
@@ -840,7 +851,14 @@ main { position: relative; min-height: 100vh; overflow: hidden; isolation: isola
   background-clip: text;
   opacity: 1 !important;
   visibility: visible !important;
-  animation: charAppear .38s cubic-bezier(.2,.8,.2,1) both;
+  text-shadow: none !important;
+}
+
+.gradient-text .type-text:hover,
+.gradient-text .type-char:hover {
+  transform: none !important;
+  filter: none !important;
+  text-shadow: none !important;
 }
 
 .about-content {
