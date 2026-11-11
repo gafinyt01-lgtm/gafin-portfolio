@@ -122,7 +122,7 @@ export default function Home() {
   const whatsappDisplay = "0858 0949 8801";
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIntroVisible(false), 3400);
+    const timer = window.setTimeout(() => setIntroVisible(false), 8000);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -135,6 +135,44 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const cursorGlow = document.querySelector<HTMLElement>(".global-cursor-glow");
+    const moveGlow = (event: PointerEvent) => {
+      if (!cursorGlow) return;
+      cursorGlow.style.setProperty("--cursor-x", `${event.clientX}px`);
+      cursorGlow.style.setProperty("--cursor-y", `${event.clientY}px`);
+      cursorGlow.classList.add("cursor-visible");
+    };
+    window.addEventListener("pointermove", moveGlow, { passive: true });
+    return () => window.removeEventListener("pointermove", moveGlow);
+  }, []);
+
+  useEffect(() => {
+    const textSelector = "h1, h2, h3, p, a, button, small, strong, label, li, .section-index, .eyebrow, .role-value, .project-category, .project-tag, .skill-level";
+    let activeText: Element | null = null;
+    const handlePointerOver = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      const nextText = target?.closest(textSelector) ?? null;
+      if (activeText && activeText !== nextText) activeText.classList.remove("cursor-text-active");
+      activeText = nextText;
+      activeText?.classList.add("cursor-text-active");
+    };
+    const handlePointerOut = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (activeText && target && activeText.contains(target) && !activeText.contains(event.relatedTarget as Node | null)) {
+        activeText.classList.remove("cursor-text-active");
+        activeText = null;
+      }
+    };
+    document.addEventListener("pointerover", handlePointerOver);
+    document.addEventListener("pointerout", handlePointerOut);
+    return () => {
+      document.removeEventListener("pointerover", handlePointerOver);
+      document.removeEventListener("pointerout", handlePointerOut);
+      activeText?.classList.remove("cursor-text-active");
+    };
+  }, []);
+
+  useEffect(() => {
     document.body.classList.toggle("intro-lock", introVisible);
     return () => document.body.classList.remove("intro-lock");
   }, [introVisible]);
@@ -143,9 +181,27 @@ export default function Home() {
 
   return (
     <main>
+      <div className="global-cursor-glow" aria-hidden="true" />
       {introVisible && (
         <div className="cinematic-intro" role="dialog" aria-label="Welcome to Gafin's portfolio">
           <div className="intro-grid" />
+          <div className="code-rain" aria-hidden="true">
+            {Array.from({ length: 25 }).map((_, index) => (
+              <span
+                className="code-rain-column"
+                key={index}
+                style={{
+                  left: `${(index / 25) * 100}%`,
+                  animationDelay: `${(index * 0.31) % 5}s`,
+                  animationDuration: `${5.5 + (index % 6) * 0.65}s`,
+                }}
+              >
+                {Array.from({ length: 13 }).map((__, charIndex) => (
+                  <i key={charIndex}>{["0", "1", "{ }", "/", "<", ">", "01", "λ", "∑", "&&", "=>", "404", "G"][((index * 7) + charIndex * 3) % 13]}</i>
+                ))}
+              </span>
+            ))}
+          </div>
           <div className="intro-orb intro-orb-one" />
           <div className="intro-orb intro-orb-two" />
           <div className="intro-content">
@@ -192,7 +248,7 @@ export default function Home() {
             <span className="name-line"><TypeText text="GAFIN" delay={0.2} /></span>
             <span className="name-line name-outline"><TypeText text="BAGOES." delay={0.55} /></span>
           </h1>
-          <p className="hero-fullname reveal-up delay-2">GAFIN BAGOES SYAHPUTRA</p>
+          <p className="hero-fullname full-name-glitch reveal-up delay-2" data-text="GAFIN BAGOES SYAHPUTRA">GAFIN BAGOES SYAHPUTRA</p>
           <div className="role-row reveal-up delay-3">
             <span className="role-prefix">I AM A</span>
             <span className="role-value" key={roleIndex}>{roles[roleIndex]}</span>
@@ -224,7 +280,8 @@ export default function Home() {
             <img src="/images/gafin.png" alt="Foto Gafin Bagoes Syahputra" className="portrait-image" />
             <div className="portrait-tint" />
             <div className="scan-grid" />
-            <div className="scan-line"><span>SCANNING PROFILE</span></div>
+            <div className="face-id-frame"><i /><i /><i /><i /><span>FACE ID / SCANNING</span></div>
+            <div className="scan-line"><span>BIOMETRIC SCAN</span></div>
             <div className="scan-corners"><i /><i /><i /><i /></div>
             <div className="portrait-crosshair crosshair-one">+</div>
             <div className="portrait-crosshair crosshair-two">+</div>
