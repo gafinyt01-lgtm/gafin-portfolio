@@ -23,7 +23,7 @@ const projects = [
     number: "01",
     title: "ROBLOX EXPERIENCE",
     category: "GAME DEVELOPMENT",
-    description: "Membangun pengalaman game dengan gameplay, obstacle, dan dunia virtual yang interaktif.",
+    description: "Building immersive game experiences through gameplay systems, obstacle courses, and interactive virtual worlds.",
     icon: Gamepad2,
     tag: "ROBLOX STUDIO",
   },
@@ -31,7 +31,7 @@ const projects = [
     number: "02",
     title: "WEB DEVELOPMENT",
     category: "FRONT-END DEVELOPMENT",
-    description: "Membuat website modern dengan tampilan responsif, animasi, dan pengalaman pengguna yang nyaman.",
+    description: "Crafting modern, responsive websites with thoughtful motion and intuitive user experiences.",
     icon: Code2,
     tag: "NEXT.JS",
   },
@@ -39,7 +39,7 @@ const projects = [
     number: "03",
     title: "3D CREATION",
     category: "3D DESIGN",
-    description: "Eksplorasi bentuk, model, dan aset 3D untuk kebutuhan visual maupun pengalaman digital.",
+    description: "Exploring forms, models, and 3D assets for visual storytelling and digital experiences.",
     icon: Box,
     tag: "3D DESIGN",
   },
@@ -165,6 +165,7 @@ export default function Home() {
 
   return (
     <main>
+      <div className="network-backdrop" aria-hidden="true" />
       <div className="global-cursor-glow" aria-hidden="true" />
       {introVisible && (
         <div className="cinematic-intro" role="dialog" aria-label="Welcome to Gafin's portfolio">
@@ -228,8 +229,8 @@ export default function Home() {
 
       <section className="hero section-shell" id="home">
         <div className="hero-copy">
-          <div className="eyebrow reveal-up"><span className="status-dot" /> AVAILABLE FOR CREATIVE PROJECTS</div>
-          <p className="hero-pretitle reveal-up delay-1">HELLO, WORLD! I&apos;M</p>
+          <div className="eyebrow reveal-up"><span className="status-dot" /> OPEN TO CREATIVE PROJECTS</div>
+          <p className="hero-pretitle reveal-up delay-1">HELLO, WORLD! I AM</p>
           <h1 className="hero-name">
             <span className="name-line"><TypeText text="GAFIN" delay={0.2} /></span>
             <span className="name-line name-outline"><TypeText text="BAGOES." delay={0.55} /></span>
@@ -241,7 +242,7 @@ export default function Home() {
             <span className="role-cursor" />
           </div>
           <p className="hero-description reveal-up delay-4">
-            Menciptakan pengalaman digital melalui kode, game, dan visual 3D. Selalu bereksperimen, belajar, dan membangun sesuatu yang baru.
+            Creating digital experiences through code, games, and 3D visuals. Always experimenting, learning, and building something new.
           </p>
           <div className="hero-actions reveal-up delay-5">
             <a href="#projects" className="button-primary">EXPLORE MY WORK <ArrowUpRight size={17} /></a>
@@ -263,7 +264,7 @@ export default function Home() {
           <div className="portrait-orbit orbit-two" />
           <div className="portrait-stage">
             <div className="portrait-backlight" />
-            <img src="/images/gafin.png" alt="Foto Gafin Bagoes Syahputra" className="portrait-image" />
+            <img src="/images/gafin.png" alt="Portrait of Gafin Bagoes Syahputra" className="portrait-image" />
             <div className="portrait-tint" />
             <div className="scan-grid" />
             <div className="face-id-frame"><i /><i /><i /><i /><span>FACE ID / SCANNING</span></div>
@@ -274,7 +275,7 @@ export default function Home() {
           </div>
           <div className="floating-chip chip-code"><Code2 size={15} /> <span>CODE / CREATE</span></div>
           <div className="floating-chip chip-3d"><Box size={15} /> <span>3D / DESIGN</span></div>
-          <div className="visual-label label-bottom"><span>PALEMBANG, ID</span><span>EST. 2026</span></div>
+          <div className="visual-label label-bottom"><span>PALEMBANG, INDONESIA</span><span>EST. 2026</span></div>
         </div>
         <a href="#about" className="scroll-indicator"><span>SCROLL TO EXPLORE</span><ArrowDown size={15} /></a>
       </section>
@@ -295,22 +296,23 @@ export default function Home() {
         <div className="section-heading">
           <span className="section-index">01 / ABOUT ME</span>
           <h2><TypeText text="BEHIND THE" /><br /><span className="gradient-text"><TypeText text="PIXELS." delay={0.3} /></span></h2>
+          <p className="section-subtitle">A creative mind exploring the space between technology and imagination.</p>
         </div>
         <div className="about-content">
           <div className="about-lead">
-            <span className="mini-label">A LITTLE INTRODUCTION</span>
-            <h3>Halo, saya <span className="gradient-text">Gafin.</span></h3>
-            <p>Saya adalah kreator digital yang tertarik pada dunia programming, game development, dan desain 3D. Saya suka mengubah ide menjadi sesuatu yang bisa dilihat, digunakan, dan dirasakan.</p>
+            <span className="mini-label">A LITTLE ABOUT ME</span>
+            <h3>Hey, I’m <span className="gradient-text">Gafin.</span></h3>
+            <p>I’m a digital creator interested in programming, game development, and 3D design. I enjoy turning ideas into things people can see, use, and experience.</p>
           </div>
           <div className="about-details">
-            <p>Perjalanan saya masih terus berkembang. Setiap project adalah kesempatan untuk mencoba hal baru, menyelesaikan tantangan, dan meningkatkan kemampuan.</p>
-            <div className="about-signature">GAFIN BAGOES SYAHPUTRA <span>— CREATIVE DEVELOPER</span></div>
+            <p>My journey is always evolving. Every project is an opportunity to explore new ideas, solve challenges, and sharpen my skills.</p>
+            <div className="about-signature">GAFIN BAGOES SYAHPUTRA <span>— DIGITAL CREATOR</span></div>
           </div>
         </div>
         <div className="stats-row">
           <div><strong>03<span>+</span></strong><small>CREATIVE FIELDS</small></div>
           <div><strong>∞</strong><small>IDEAS TO EXPLORE</small></div>
-          <div><strong>100<span>%</span></strong><small>PASSION TO CREATE</small></div>
+          <div><strong>100<span>%</span></strong><small>PASSION FOR CREATING</small></div>
         </div>
       </section>
 
@@ -318,6 +320,7 @@ export default function Home() {
         <div className="section-heading">
           <span className="section-index">02 / WHAT I DO</span>
           <h2><TypeText text="MY CREATIVE" /><br /><span className="gradient-text"><TypeText text="TOOLKIT." delay={0.3} /></span></h2>
+          <p className="section-subtitle">The skills and tools I use to bring digital ideas to life.</p>
         </div>
         <div className="skills-grid">
           {skills.map((skill, index) => {
@@ -336,8 +339,8 @@ export default function Home() {
 
       <section className="content-section section-shell" id="projects">
         <div className="section-heading project-heading">
-          <div><span className="section-index">03 / SELECTED INTERESTS</span><h2><TypeText text="THINGS I" /><br /><span className="gradient-text"><TypeText text="BUILD." delay={0.3} /></span></h2></div>
-          <p className="project-heading-note">Ide, eksperimen, dan karya yang terus berkembang.</p>
+          <div><span className="section-index">03 / SELECTED WORK</span><h2><TypeText text="THINGS I" /><br /><span className="gradient-text"><TypeText text="BUILD." delay={0.3} /></span></h2><p className="section-subtitle">A glimpse into the worlds, interfaces, and visuals I love creating.</p></div>
+          <p className="project-heading-note">Ideas, experiments, and creations — always evolving.</p>
         </div>
         <div className="projects-list">
           {projects.map((project) => {
@@ -363,13 +366,13 @@ export default function Home() {
         <div className="contact-glow" />
         <span className="section-index">04 / GET IN TOUCH</span>
         <h2>HAVE AN IDEA?<br /><span className="gradient-text">LET&apos;S CREATE.</span></h2>
-        <p>Punya project, ide, atau sekadar ingin ngobrol? Hubungi saya melalui salah satu platform di bawah ini.</p>
+        <p>Have a project in mind, an idea to share, or just want to connect? Reach out through any of the platforms below.</p>
         <div className="contact-actions">
           <a href={whatsappUrl} target="_blank" rel="noreferrer" className="contact-button whatsapp-button">
             <WhatsAppMark /> CHAT ON WHATSAPP <ArrowUpRight size={17} />
           </a>
           <a href={instagramUrl} target="_blank" rel="noreferrer" className="contact-button instagram-button">
-            <InstagramMark /> FOLLOW INSTAGRAM <ArrowUpRight size={17} />
+            <InstagramMark /> FOLLOW ON INSTAGRAM <ArrowUpRight size={17} />
           </a>
         </div>
         <div className="contact-handle-row">
