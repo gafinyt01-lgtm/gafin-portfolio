@@ -1,414 +1,344 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import {
   ArrowDown,
   ArrowUpRight,
-  Github,
-  Instagram,
   Code2,
   Gamepad2,
   Box,
   Sparkles,
+  Github,
   Menu,
   X,
   Cpu,
   Layers3,
+  Send,
 } from "lucide-react";
 
-const roles = [
-  "PROGRAMMER",
-  "GAME DEVELOPER",
-  "3D DESIGNER",
-];
+const roles = ["PROGRAMMER", "GAME DEVELOPER", "3D DESIGNER"];
 
-const skills = [
+const projects = [
   {
     number: "01",
-    title: "Programming",
-    description:
-      "Turning ideas into useful digital experiences through code.",
-    icon: Code2,
-    tags: ["Web", "Logic", "Development"],
+    title: "ROBLOX EXPERIENCE",
+    category: "GAME DEVELOPMENT",
+    description: "Membangun pengalaman game dengan gameplay, obstacle, dan dunia virtual yang interaktif.",
+    icon: Gamepad2,
+    tag: "ROBLOX STUDIO",
   },
   {
     number: "02",
-    title: "Game Development",
-    description:
-      "Building interactive worlds, gameplay systems, and experiences.",
-    icon: Gamepad2,
-    tags: ["Roblox", "Game Systems", "Interactive"],
+    title: "WEB DEVELOPMENT",
+    category: "FRONT-END DEVELOPMENT",
+    description: "Membuat website modern dengan tampilan responsif, animasi, dan pengalaman pengguna yang nyaman.",
+    icon: Code2,
+    tag: "NEXT.JS",
   },
   {
     number: "03",
-    title: "3D Design",
-    description:
-      "Exploring shapes, objects, and visual ideas in three dimensions.",
+    title: "3D CREATION",
+    category: "3D DESIGN",
+    description: "Eksplorasi bentuk, model, dan aset 3D untuk kebutuhan visual maupun pengalaman digital.",
     icon: Box,
-    tags: ["Modeling", "Assets", "Visuals"],
+    tag: "3D DESIGN",
   },
 ];
 
-const navItems = [
-  ["ABOUT", "about"],
-  ["EXPERTISE", "skills"],
-  ["PROJECTS", "projects"],
-  ["CONTACT", "contact"],
+const skills = [
+  { name: "HTML & CSS", level: "WEB", icon: Code2 },
+  { name: "JavaScript", level: "WEB", icon: Cpu },
+  { name: "Roblox Studio", level: "GAME", icon: Gamepad2 },
+  { name: "3D Design", level: "3D", icon: Box },
+  { name: "UI / UX", level: "DESIGN", icon: Layers3 },
+  { name: "Creative Coding", level: "EXPERIMENTAL", icon: Sparkles },
 ];
 
+function TypeText({
+  text,
+  className = "",
+  delay = 0,
+}: {
+  text: string;
+  className?: string;
+  delay?: number;
+}) {
+  return (
+    <span className={`type-text ${className}`} aria-label={text} data-text={text}>
+      {Array.from(text).map((char, index) => (
+        <span
+          className="type-char"
+          aria-hidden="true"
+          key={`${char}-${index}`}
+          style={{ animationDelay: `${delay + Math.min(index * 0.018, 1.15)}s` }}
+        >
+          {char === " " ? "\u00a0" : char}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function InstagramMark() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="brand-svg instagram-svg">
+      <defs>
+        <linearGradient id="ig-gradient" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stopColor="#ffd776" />
+          <stop offset="45%" stopColor="#ff4d6d" />
+          <stop offset="100%" stopColor="#9b5cff" />
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig-gradient)" />
+      <rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.5" fill="none" stroke="white" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="2.8" fill="none" stroke="white" strokeWidth="1.8" />
+      <circle cx="17.1" cy="6.9" r="1.1" fill="white" />
+    </svg>
+  );
+}
+
+function WhatsAppMark() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="brand-svg whatsapp-svg">
+      <path
+        fill="#25D366"
+        d="M12.04 2C6.53 2 2.05 6.48 2.05 11.99c0 1.76.46 3.48 1.34 4.99L2 22l5.14-1.35a9.96 9.96 0 0 0 4.9 1.28h.01c5.51 0 9.99-4.48 9.99-9.99A9.93 9.93 0 0 0 19.1 4.9 9.93 9.93 0 0 0 12.04 2Z"
+      />
+      <path
+        fill="#fff"
+        d="M17.83 14.55c-.32-.16-1.88-.93-2.17-1.03-.29-.11-.5-.16-.71.16-.21.32-.82 1.03-1 1.24-.18.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.22-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.18.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.71-1.72-.98-2.35-.26-.62-.52-.54-.71-.55h-.61c-.21 0-.56.08-.85.4-.29.32-1.11 1.08-1.11 2.64s1.14 3.06 1.3 3.27c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.53 1.81.68.76.24 1.45.21 2 .13.61-.09 1.88-.77 2.14-1.51.26-.74.26-1.37.18-1.51-.08-.13-.29-.21-.61-.37Z"
+      />
+    </svg>
+  );
+}
+
 export default function Home() {
-  const [activeRole, setActiveRole] = useState(0);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [introVisible, setIntroVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveRole((current) => (current + 1) % roles.length);
-    }, 2500);
+  const instagramUrl = "https://www.instagram.com/gfinbgsptra/";
+  const whatsappUrl = "https://wa.me/6285809498801";
+  const whatsappDisplay = "0858 0949 8801";
 
-    return () => window.clearInterval(timer);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIntroVisible(false), 3400);
+    return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const interval = window.setInterval(
+      () => setRoleIndex((current) => (current + 1) % roles.length),
+      2600
+    );
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("intro-lock", introVisible);
+    return () => document.body.classList.remove("intro-lock");
+  }, [introVisible]);
+
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <main className="site-shell" id="home">
-      <div className="ambient ambient-blue" />
-      <div className="ambient ambient-purple" />
-      <div className="grid-overlay" />
-      <div className="noise" />
+    <main>
+      {introVisible && (
+        <div className="cinematic-intro" role="dialog" aria-label="Welcome to Gafin's portfolio">
+          <div className="intro-grid" />
+          <div className="intro-orb intro-orb-one" />
+          <div className="intro-orb intro-orb-two" />
+          <div className="intro-content">
+            <span className="intro-kicker"><span className="status-dot" /> PERSONAL DIGITAL SPACE</span>
+            <p className="intro-welcome">WELCOME TO</p>
+            <h1 className="intro-title" data-text="GAFIN'S PORTFOLIO">GAFIN&apos;S PORTFOLIO</h1>
+            <p className="intro-subtitle">GAFIN BAGOES SYAHPUTRA</p>
+            <div className="intro-progress"><span /></div>
+            <div className="intro-bottom">
+              <span>INITIALIZING EXPERIENCE...</span>
+              <button onClick={() => setIntroVisible(false)}>SKIP INTRO <ArrowUpRight size={14} /></button>
+            </div>
+          </div>
+          <span className="intro-coordinate">IDN / PLB — 2026</span>
+        </div>
+      )}
 
-      {/* NAVBAR */}
-      <header className="navbar">
-        <a href="#home" className="logo text-flow">
-          GBS<span>.</span>
+      <div className="ambient ambient-a" />
+      <div className="ambient ambient-b" />
+      <div className="noise-overlay" />
+
+      <header className="site-header">
+        <a href="#home" className="brand" onClick={closeMenu}>
+          <span className="brand-mark">G<span>.</span></span>
+          <span>GAFIN<span className="brand-muted">/PORTFOLIO</span></span>
         </a>
-
-        <nav className={`nav-links ${menuOpen ? "nav-links-open" : ""}`}>
-          {navItems.map(([label, id], index) => (
-            <a
-              key={id}
-              href={`#${id}`}
-              className="text-flow"
-              style={{ animationDelay: `${index * 0.2}s` }}
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-
-        <a href="#contact" className="nav-contact text-flow">
-          LET&apos;S CONNECT <ArrowUpRight size={15} />
-        </a>
-
-        <button
-          className="mobile-menu"
-          aria-label="Toggle menu"
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          {menuOpen ? <X size={21} /> : <Menu size={21} />}
+        <button className="mobile-menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+          {menuOpen ? <X /> : <Menu />}
         </button>
+        <nav className={menuOpen ? "main-nav nav-open" : "main-nav"}>
+          <a href="#home" onClick={closeMenu}><TypeText text="HOME" /></a>
+          <a href="#about" onClick={closeMenu}><TypeText text="ABOUT" /></a>
+          <a href="#skills" onClick={closeMenu}><TypeText text="SKILLS" /></a>
+          <a href="#projects" onClick={closeMenu}><TypeText text="PROJECTS" /></a>
+          <a href="#contact" className="nav-contact" onClick={closeMenu}>LET&apos;S TALK <ArrowUpRight size={14} /></a>
+        </nav>
       </header>
 
-      {/* HERO */}
-      <section className="hero section-wrap">
-        <div className="hero-content">
-          <div className="availability text-flow">
-            <span className="status-dot" />
-            CREATIVE MIND · DIGITAL WORLD
-          </div>
-
-          <p className="eyebrow text-flow">HELLO, I&apos;M</p>
-
-          <h1 className="hero-title">
-            <span className="hero-title-line text-flow glitch">
-              GAFIN
-            </span>
-            <span className="hero-title-line gradient-text text-flow glitch">
-              BAGOES.
-            </span>
+      <section className="hero section-shell" id="home">
+        <div className="hero-copy">
+          <div className="eyebrow reveal-up"><span className="status-dot" /> AVAILABLE FOR CREATIVE PROJECTS</div>
+          <p className="hero-pretitle reveal-up delay-1">HELLO, WORLD! I&apos;M</p>
+          <h1 className="hero-name">
+            <span className="name-line"><TypeText text="GAFIN" delay={0.2} /></span>
+            <span className="name-line name-outline"><TypeText text="BAGOES." delay={0.55} /></span>
           </h1>
-
-          <p className="full-name text-flow">
-            GAFIN BAGOES SYAHPUTRA
-          </p>
-
-          <div className="role-line">
-            <span className="role-prefix text-flow">I CREATE AS</span>
-            <span className="role-text" key={activeRole}>
-              {roles[activeRole]}
-            </span>
+          <p className="hero-fullname reveal-up delay-2">GAFIN BAGOES SYAHPUTRA</p>
+          <div className="role-row reveal-up delay-3">
+            <span className="role-prefix">I AM A</span>
+            <span className="role-value" key={roleIndex}>{roles[roleIndex]}</span>
+            <span className="role-cursor" />
           </div>
-
-          <p className="hero-description text-flow">
-            Exploring the intersection of code, interactive worlds,
-            and three-dimensional design. Turning imagination into
-            digital experiences, one idea at a time.
+          <p className="hero-description reveal-up delay-4">
+            Menciptakan pengalaman digital melalui kode, game, dan visual 3D. Selalu bereksperimen, belajar, dan membangun sesuatu yang baru.
           </p>
-
-          <div className="hero-actions">
-            <a href="#projects" className="button-primary">
-              EXPLORE MY WORLD <ArrowUpRight size={17} />
-            </a>
-            <a href="#about" className="button-ghost">
-              GET TO KNOW ME
-            </a>
+          <div className="hero-actions reveal-up delay-5">
+            <a href="#projects" className="button-primary">EXPLORE MY WORK <ArrowUpRight size={17} /></a>
+            <a href="#contact" className="button-ghost">CONTACT ME <Send size={15} /></a>
           </div>
-
-          <div className="social-row">
-            <span className="text-flow">FOLLOW THE JOURNEY</span>
-            <a
-              href="https://github.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-            >
-              <Github size={19} />
+          <div className="hero-socials reveal-up delay-6">
+            <a href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram Gafin" className="social-link">
+              <InstagramMark /><span>@gfinbgsptra</span><ArrowUpRight size={12} />
             </a>
-            <a
-              href="https://instagram.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-            >
-              <Instagram size={19} />
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp Gafin" className="social-link">
+              <WhatsAppMark /><span>{whatsappDisplay}</span><ArrowUpRight size={12} />
             </a>
           </div>
         </div>
 
-        {/* PROFILE */}
-        <div className="hero-visual">
-          <div className="portrait-halo" />
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="orbit-dot" />
-
+        <div className="hero-visual reveal-zoom">
+          <div className="visual-label label-top"><span>FIG. 001</span><span>CREATIVE MINDSET</span></div>
+          <div className="portrait-orbit orbit-one" />
+          <div className="portrait-orbit orbit-two" />
           <div className="portrait-stage">
-            <img
-              src="/images/gafin.png"
-              alt="Gafin Bagoes Syahputra"
-              className="gafin-portrait"
-            />
+            <div className="portrait-backlight" />
+            <img src="/images/gafin.png" alt="Foto Gafin Bagoes Syahputra" className="portrait-image" />
+            <div className="portrait-tint" />
+            <div className="scan-grid" />
+            <div className="scan-line"><span>SCANNING PROFILE</span></div>
+            <div className="scan-corners"><i /><i /><i /><i /></div>
+            <div className="portrait-crosshair crosshair-one">+</div>
+            <div className="portrait-crosshair crosshair-two">+</div>
           </div>
-
-          <div className="floating-card card-code">
-            <Code2 size={19} />
-            <span className="text-flow">CODE / CREATE</span>
-          </div>
-
-          <div className="floating-card card-3d">
-            <Box size={19} />
-            <span className="text-flow">DESIGN / BUILD</span>
-          </div>
-
-          <div className="portrait-caption">
-            <span className="text-flow">GBS — 001</span>
-            <span className="text-flow">CREATIVE PORTFOLIO</span>
-          </div>
+          <div className="floating-chip chip-code"><Code2 size={15} /> <span>CODE / CREATE</span></div>
+          <div className="floating-chip chip-3d"><Box size={15} /> <span>3D / DESIGN</span></div>
+          <div className="visual-label label-bottom"><span>PALEMBANG, ID</span><span>EST. 2026</span></div>
         </div>
-
-        <a href="#about" className="scroll-cue text-flow">
-          <span className="scroll-icon">
-            <ArrowDown size={15} />
-          </span>
-          SCROLL TO EXPLORE
-        </a>
-
-        <div className="hero-index text-flow">
-          01 <span>/</span> 05
-        </div>
+        <a href="#about" className="scroll-indicator"><span>SCROLL TO EXPLORE</span><ArrowDown size={15} /></a>
       </section>
 
-      {/* MOVING TEXT */}
-      <section className="marquee-section">
+      <div className="marquee-strip" aria-label="Creative disciplines">
         <div className="marquee-track">
-          {[0, 1, 2, 3].map((item) => (
-            <div className="marquee-content" key={item}>
-              <span>PROGRAMMER</span>
-              <i>✳</i>
-              <span>GAME DEVELOPER</span>
-              <i>✳</i>
-              <span>3D DESIGNER</span>
-              <i>✳</i>
-              <span>CREATIVE MIND</span>
-              <i>✳</i>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <div className="marquee-group" key={index}>
+              {["CODE", "CREATE", "INNOVATE", "DESIGN", "BUILD", "REPEAT"].map((item) => (
+                <span key={`${index}-${item}`}>{item}<b>✳</b></span>
+              ))}
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* ABOUT */}
-      <section className="content-section section-wrap" id="about">
+      <section className="content-section section-shell" id="about">
         <div className="section-heading">
-          <p className="section-label text-flow">
-            01 / A LITTLE INTRODUCTION
-          </p>
-          <span className="section-mark text-flow">
-            <Sparkles size={16} /> ABOUT
-          </span>
+          <span className="section-index">01 / ABOUT ME</span>
+          <h2><TypeText text="BEHIND THE" /><br /><span className="gradient-text"><TypeText text="PIXELS." delay={0.3} /></span></h2>
         </div>
-
-        <div className="about-layout">
-          <h2 className="section-title">
-            <span className="title-line text-flow">BEYOND</span>
-            <span className="title-line gradient-text text-flow">
-              THE CODE.
-            </span>
-          </h2>
-
-          <div className="about-copy">
-            <p className="large-copy text-flow">
-              I&apos;m <strong>Gafin Bagoes Syahputra</strong> — a
-              creative learner passionate about technology and
-              digital creation.
-            </p>
-
-            <p className="text-flow">
-              From programming and game development to 3D design,
-              I enjoy experimenting, learning new tools, and
-              bringing ideas to life. This space is where I share
-              that journey.
-            </p>
-
-            <a href="#skills" className="text-link text-flow">
-              EXPLORE MY EXPERTISE <ArrowUpRight size={16} />
-            </a>
+        <div className="about-content">
+          <div className="about-lead">
+            <span className="mini-label">A LITTLE INTRODUCTION</span>
+            <h3>Halo, saya <span className="gradient-text">Gafin.</span></h3>
+            <p>Saya adalah kreator digital yang tertarik pada dunia programming, game development, dan desain 3D. Saya suka mengubah ide menjadi sesuatu yang bisa dilihat, digunakan, dan dirasakan.</p>
+          </div>
+          <div className="about-details">
+            <p>Perjalanan saya masih terus berkembang. Setiap project adalah kesempatan untuk mencoba hal baru, menyelesaikan tantangan, dan meningkatkan kemampuan.</p>
+            <div className="about-signature">GAFIN BAGOES SYAHPUTRA <span>— CREATIVE DEVELOPER</span></div>
           </div>
         </div>
+        <div className="stats-row">
+          <div><strong>03<span>+</span></strong><small>CREATIVE FIELDS</small></div>
+          <div><strong>∞</strong><small>IDEAS TO EXPLORE</small></div>
+          <div><strong>100<span>%</span></strong><small>PASSION TO CREATE</small></div>
+        </div>
       </section>
 
-      {/* EXPERTISE */}
-      <section className="content-section section-wrap" id="skills">
+      <section className="content-section section-shell" id="skills">
         <div className="section-heading">
-          <p className="section-label text-flow">
-            02 / WHAT I DO
-          </p>
-          <span className="section-mark text-flow">
-            MY EXPERTISE
-          </span>
+          <span className="section-index">02 / WHAT I DO</span>
+          <h2><TypeText text="MY CREATIVE" /><br /><span className="gradient-text"><TypeText text="TOOLKIT." delay={0.3} /></span></h2>
         </div>
-
-        <h2 className="section-title skills-heading">
-          <span className="text-flow">IDEAS INTO</span>{" "}
-          <span className="gradient-text text-flow">
-            REALITY.
-          </span>
-        </h2>
-
-        <div className="skill-grid">
-          {skills.map((skill) => {
+        <div className="skills-grid">
+          {skills.map((skill, index) => {
             const Icon = skill.icon;
-
             return (
-              <article className="skill-card" key={skill.number}>
-                <div className="skill-top">
-                  <span className="text-flow">{skill.number}</span>
-                  <Icon size={26} />
+              <div className="skill-card hover-card" key={skill.name} style={{ animationDelay: `${index * 0.08}s` }}>
+                <div className="skill-icon"><Icon size={21} /></div>
+                <span className="skill-level">{skill.level}</span>
+                <h3>{skill.name}</h3>
+                <span className="card-arrow"><ArrowUpRight size={16} /></span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="content-section section-shell" id="projects">
+        <div className="section-heading project-heading">
+          <div><span className="section-index">03 / SELECTED INTERESTS</span><h2><TypeText text="THINGS I" /><br /><span className="gradient-text"><TypeText text="BUILD." delay={0.3} /></span></h2></div>
+          <p className="project-heading-note">Ide, eksperimen, dan karya yang terus berkembang.</p>
+        </div>
+        <div className="projects-list">
+          {projects.map((project) => {
+            const Icon = project.icon;
+            return (
+              <article className="project-card" key={project.number}>
+                <span className="project-number">{project.number}</span>
+                <div className="project-icon"><Icon size={25} /></div>
+                <div className="project-info">
+                  <span className="project-category">{project.category}</span>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
                 </div>
-
-                <h3 className="text-flow">{skill.title}</h3>
-
-                <p className="text-flow">{skill.description}</p>
-
-                <div className="skill-tags">
-                  {skill.tags.map((tag) => (
-                    <span className="text-flow" key={tag}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                <span className="project-tag">{project.tag}</span>
+                <ArrowUpRight className="project-arrow" size={22} />
               </article>
             );
           })}
         </div>
       </section>
 
-      {/* PROJECTS */}
-      <section
-        className="content-section section-wrap projects-section"
-        id="projects"
-      >
-        <div className="section-heading">
-          <p className="section-label text-flow">
-            03 / SELECTED WORKS
-          </p>
-          <span className="section-mark text-flow">
-            IN PROGRESS
-          </span>
+      <section className="contact-section section-shell" id="contact">
+        <div className="contact-glow" />
+        <span className="section-index">04 / GET IN TOUCH</span>
+        <h2>HAVE AN IDEA?<br /><span className="gradient-text">LET&apos;S CREATE.</span></h2>
+        <p>Punya project, ide, atau sekadar ingin ngobrol? Hubungi saya melalui salah satu platform di bawah ini.</p>
+        <div className="contact-actions">
+          <a href={whatsappUrl} target="_blank" rel="noreferrer" className="contact-button whatsapp-button">
+            <WhatsAppMark /> CHAT ON WHATSAPP <ArrowUpRight size={17} />
+          </a>
+          <a href={instagramUrl} target="_blank" rel="noreferrer" className="contact-button instagram-button">
+            <InstagramMark /> FOLLOW INSTAGRAM <ArrowUpRight size={17} />
+          </a>
         </div>
-
-        <h2 className="section-title">
-          <span className="text-flow">MADE WITH</span>{" "}
-          <span className="gradient-text text-flow">
-            INTENTION.
-          </span>
-        </h2>
-
-        <p className="section-description text-flow">
-          A collection of experiments, ideas, and projects.
-          More work will appear here as the journey grows.
-        </p>
-
-        <div className="project-placeholder">
-          <div className="project-symbol">
-            <Layers3 size={34} />
-          </div>
-
-          <div>
-            <span className="project-kicker text-flow">
-              PORTFOLIO / 001
-            </span>
-            <h3 className="text-flow">
-              Something is taking shape.
-            </h3>
-            <p className="text-flow">
-              Projects and creative experiments coming soon.
-            </p>
-          </div>
-
-          <span className="project-status text-flow">
-            COMING SOON
-          </span>
+        <div className="contact-handle-row">
+          <span><WhatsAppMark /> {whatsappDisplay}</span>
+          <span><InstagramMark /> @gfinbgsptra</span>
         </div>
       </section>
 
-      {/* CONTACT */}
-      <section className="contact-section section-wrap" id="contact">
-        <p className="section-label text-flow">
-          04 / HAVE AN IDEA?
-        </p>
-
-        <h2>
-          <span className="title-line text-flow">LET&apos;S MAKE</span>
-          <span className="title-line gradient-text text-flow">
-            IT HAPPEN.
-          </span>
-        </h2>
-
-        <p className="text-flow">
-          Have a project, collaboration, or just want to say hello?
-        </p>
-
-        <a
-          className="button-primary"
-          href="mailto:hello@example.com"
-        >
-          GET IN TOUCH <ArrowUpRight size={17} />
-        </a>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="footer">
-        <a href="#home" className="footer-logo text-flow">
-          GBS<span>.</span>
-        </a>
-
-        <span className="text-flow">
-          DESIGNED & BUILT WITH CURIOSITY.
-        </span>
-
-        <span className="text-flow">
-          © {new Date().getFullYear()} GAFIN BAGOES SYAHPUTRA
-        </span>
+      <footer className="site-footer section-shell">
+        <a href="#home" className="footer-brand">GAFIN<span>.</span></a>
+        <p>DESIGNED & BUILT BY GAFIN BAGOES SYAHPUTRA</p>
+        <span>© 2026 — ALL RIGHTS RESERVED</span>
       </footer>
     </main>
   );
