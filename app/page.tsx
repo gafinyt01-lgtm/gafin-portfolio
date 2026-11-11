@@ -54,6 +54,8 @@ const skills = [
   { name: "Creative Coding", level: "EXPERIMENTAL", icon: Sparkles },
 ];
 
+const rainSymbols = ["0", "1", "{ }", "/", "<", ">", "01", "λ", "∑", "&&", "=>", "404", "G", "const", "{}", "[]", "npm", "git", "CSS", "JS"];
+
 function TypeText({
   text,
   className = "",
@@ -136,39 +138,21 @@ export default function Home() {
 
   useEffect(() => {
     const cursorGlow = document.querySelector<HTMLElement>(".global-cursor-glow");
+    if (!cursorGlow) return;
+
     const moveGlow = (event: PointerEvent) => {
-      if (!cursorGlow) return;
       cursorGlow.style.setProperty("--cursor-x", `${event.clientX}px`);
       cursorGlow.style.setProperty("--cursor-y", `${event.clientY}px`);
       cursorGlow.classList.add("cursor-visible");
     };
-    window.addEventListener("pointermove", moveGlow, { passive: true });
-    return () => window.removeEventListener("pointermove", moveGlow);
-  }, []);
 
-  useEffect(() => {
-    const textSelector = "h1, h2, h3, p, a, button, small, strong, label, li, .section-index, .eyebrow, .role-value, .project-category, .project-tag, .skill-level";
-    let activeText: Element | null = null;
-    const handlePointerOver = (event: PointerEvent) => {
-      const target = event.target as HTMLElement | null;
-      const nextText = target?.closest(textSelector) ?? null;
-      if (activeText && activeText !== nextText) activeText.classList.remove("cursor-text-active");
-      activeText = nextText;
-      activeText?.classList.add("cursor-text-active");
-    };
-    const handlePointerOut = (event: PointerEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (activeText && target && activeText.contains(target) && !activeText.contains(event.relatedTarget as Node | null)) {
-        activeText.classList.remove("cursor-text-active");
-        activeText = null;
-      }
-    };
-    document.addEventListener("pointerover", handlePointerOver);
-    document.addEventListener("pointerout", handlePointerOut);
+    const hideGlow = () => cursorGlow.classList.remove("cursor-visible");
+
+    window.addEventListener("pointermove", moveGlow, { passive: true });
+    document.addEventListener("pointerleave", hideGlow);
     return () => {
-      document.removeEventListener("pointerover", handlePointerOver);
-      document.removeEventListener("pointerout", handlePointerOut);
-      activeText?.classList.remove("cursor-text-active");
+      window.removeEventListener("pointermove", moveGlow);
+      document.removeEventListener("pointerleave", hideGlow);
     };
   }, []);
 
@@ -186,18 +170,20 @@ export default function Home() {
         <div className="cinematic-intro" role="dialog" aria-label="Welcome to Gafin's portfolio">
           <div className="intro-grid" />
           <div className="code-rain" aria-hidden="true">
-            {Array.from({ length: 25 }).map((_, index) => (
+            {Array.from({ length: 32 }).map((_, index) => (
               <span
                 className="code-rain-column"
                 key={index}
                 style={{
-                  left: `${(index / 25) * 100}%`,
-                  animationDelay: `${(index * 0.31) % 5}s`,
-                  animationDuration: `${5.5 + (index % 6) * 0.65}s`,
+                  left: `${(index / 32) * 100}%`,
+                  animationDelay: `${-((index * 0.37) % 5.5)}s`,
+                  animationDuration: `${4.2 + (index % 7) * 0.42}s`,
                 }}
               >
-                {Array.from({ length: 13 }).map((__, charIndex) => (
-                  <i key={charIndex}>{["0", "1", "{ }", "/", "<", ">", "01", "λ", "∑", "&&", "=>", "404", "G"][((index * 7) + charIndex * 3) % 13]}</i>
+                {Array.from({ length: 24 }).map((__, charIndex) => (
+                  <i key={charIndex}>
+                    {rainSymbols[(index * 7 + charIndex * 11 + (index % 5)) % rainSymbols.length]}
+                  </i>
                 ))}
               </span>
             ))}
